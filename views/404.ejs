@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("./partials/head.ejs") %>
+  <body>
+    <%- include('partials/navbar') %>
+
+    <div class="flex flex-col items-center mb-[500px]">
+      <div
+        class="not-found content text-4xl font-semibold text-primary text-center mt-40"
+      >
+        OOPS PAGE NOT FOUND
+      </div>
+
+      <a href="/">
+        <button
+          type="submit"
+          class="mt-5 px-6 py-2 bg-primary text-white font-medium rounded-md hover:bg-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+        >
+          Go Back to Home
+        </button>
+      </a>
+    </div>
+    <%- include('partials/footer') %>
+  </body>
+</html>

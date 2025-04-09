@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("partials/head.ejs") %>
+  <body class="bg-gray-50">
+    <%- include('partials/navbar') %>
+    <main class="max-w-4xl mx-auto p-6 my-10">
+      <section class="bg-white rounded-lg shadow-md p-8">
+        <h1 class="text-3xl font-bold text-primary mb-8">Edit Blog Post</h1>
+
+        <form
+          id="edit-form"
+          action="/blogs/<%= blog._id %>?_method=PUT"
+          method="POST"
+          enctype="multipart/form-data"
+          class="space-y-6"
+        >
+          <!-- Title -->
+          <div class="space-y-2">
+            <label for="title" class="block text-lg font-medium text-gray-700"
+              >Blog Title</label
+            >
+            <input
+              type="text"
+              id="title"
+              name="title"
+              required
+              value="<%= blog.title %>"
+              class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-secondary focus:border-transparent"
+              placeholder="Enter your blog title"
+            />
+          </div>
+
+          <!-- Image -->
+          <div class="space-y-2">
+            <label for="image" class="block text-lg font-medium text-gray-700"
+              >Upload Image</label
+            >
+            <input
+              type="file"
+              id="image"
+              name="image"
+              accept="image/*"
+              class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-secondary focus:border-transparent"
+              onchange="previewImage(event)"
+            />
+            <div class="mt-4">
+              <img
+                id="imagePreview"
+                src="<%= blog.image %>"
+                alt="Image Preview"
+                class="max-h-64 rounded-lg border border-gray-300 p-2 <%= blog.image ? '' : 'hidden' %>"
+              />
+            </div>
+          </div>
+
+          <!-- Snippet -->
+          <div class="space-y-2">
+            <label for="snippet" class="block text-lg font-medium text-gray-700"
+              >Blog Snippet</label
+            >
+            <input
+              type="text"
+              id="snippet"
+              name="snippet"
+              required
+              value="<%= blog.snippet %>"
+              class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-secondary focus:border-transparent"
+              placeholder="A short description of your blog"
+            />
+          </div>
+
+          <!-- Body -->
+          <div class="space-y-2">
+            <label for="body" class="block text-lg font-medium text-gray-700"
+              >Blog Content</label
+            >
+            <textarea
+              id="body"
+              name="body"
+              required
+              rows="10"
+              class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-secondary focus:border-transparent"
+              placeholder="Write your blog content here..."
+            >
+<%= blog.body %></textarea
+            >
+          </div>
+
+          <!-- Buttons -->
+          <div class="flex justify-center gap-4">
+            <a
+              href="/blogs/<%= blog._id %>"
+              class="px-6 py-2 bg-gray-500 text-white font-medium rounded-md hover:bg-gray-600 transition-colors"
+            >
+              Cancel
+            </a>
+            <button
+              type="submit"
+              class="px-6 py-2 bg-primary text-white font-medium rounded-md hover:bg-secondary transition-colors"
+            >
+              Update Blog
+            </button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <%- include('partials/footer') %>
+
+    <script>
+      function previewImage(event) {
+        const input = event.target;
+        const preview = document.getElementById("imagePreview");
+
+        if (input.files && input.files[0]) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            preview.src = e.target.result;
+            preview.classList.remove("hidden");
+          };
+          reader.readAsDataURL(input.files[0]);
+        }
+      }
+
+      document
+        .getElementById("edit-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const form = e.target;
+          const formData = new FormData(form);
+          const url = form.action;
+
+          try {
+            const response = await fetch(url, {
+              method: "POST", // still POST because _method=PUT handles override
+              body: formData,
+            });
+
+            const result = await response.json();
+            window.location.href = result.redirect;
+          } catch (error) {
+            console.error("Error:", error);
+          }
+        });
+    </script>
+  </body>
+</html>
